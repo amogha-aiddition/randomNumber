@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Random Number Generator</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+    }
+    h1 {
+      font-size: 2rem;
+      color: #333;
+    }
+    .number {
+      font-size: 6rem;
+      color: #0078ff;
+      margin: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Your Random Number</h1>
+  <div class="number" id="randomNumber">?</div>
+
+  <script>
+    // --- SETTINGS ---
+    const totalStudents = 24; // adjust for your class size
+    const groupCount = 8;     // number range (1–8)
+    // ----------------
+
+    const STORAGE_KEY = "assignedNumber_v1"; // local storage key
+
+    function generateEvenNumber() {
+      const studentsPerGroup = Math.floor(totalStudents / groupCount);
+      let pool = [];
+
+      // fill pool evenly
+      for (let i = 1; i <= groupCount; i++) {
+        for (let j = 0; j < studentsPerGroup; j++) {
+          pool.push(i);
+        }
+      }
+
+      // handle remainder if not divisible evenly
+      while (pool.length < totalStudents) {
+        pool.push(Math.floor(Math.random() * groupCount) + 1);
+      }
+
+      // random pick
+      const randomIndex = Math.floor(Math.random() * pool.length);
+      return pool[randomIndex];
+    }
+
+    function getOrCreateNumber() {
+      let saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        return parseInt(saved, 10);
+      } else {
+        const num = generateEvenNumber();
+        localStorage.setItem(STORAGE_KEY, num);
+        return num;
+      }
+    }
+
+    const assignedNumber = getOrCreateNumber();
+    document.getElementById("randomNumber").textContent = assignedNumber;
+  </script>
+</body>
+</html>
